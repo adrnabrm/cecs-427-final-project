@@ -10,7 +10,7 @@ pip install -r requirements.txt
 
 ## TODO:
 - Compute metrics for each graph:
-   * Nodes, edges
+   * Nodes, edges [DONE]
    * Density
    * Average degree
    * Clustering coefficient (`nx.average_clustering`)
