@@ -3,6 +3,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import os
 from typing import Dict
+from algorithms import GraphAnalysis
 
 def load_data() -> Dict[str, nx.Graph]:
     language_graphs = {}
@@ -30,5 +31,17 @@ def load_data() -> Dict[str, nx.Graph]:
 if __name__ == "__main__":
     # Loading graphs
     graphs: Dict[str, nx.Graph] = load_data()
+    print(f"--Node and edge counts for each graph--")
+
+    # Print num nodes/edges
+    # Denotes size of each community and connections between individuals
     for lang, G in graphs.items():
         print(f"{lang}: {G.number_of_nodes()} nodes, {G.number_of_edges()} edges")
+    print()
+
+    # Print density
+    # Shows how interconnected each community is
+    densities = GraphAnalysis.density(graphs)
+    for lang, density in densities.items():
+        print(f"{lang} Density: {density}")
+    print()
