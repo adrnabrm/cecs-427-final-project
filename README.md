@@ -71,7 +71,3 @@ most likely smth like this:
 
 → Let us see the structure behind the metrics.  
 → Visually highlight tightly-knit clusters, sparse regions, and any bridging nodes.
-
----
-
-If you want, I can also help place this section into your report draft exactly where it fits best.
