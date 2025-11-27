@@ -45,3 +45,10 @@ if __name__ == "__main__":
     for lang, density in densities.items():
         print(f"{lang} Density: {density}")
     print()
+
+    # Print average degree of each node in each graph
+    # High interconnectivity shows tighter communities
+    avg_degrees = GraphAnalysis.average_degree(graphs)
+    for lang, avg_deg in avg_degrees.items():
+        print(f"{lang} Average Degree Count: {avg_deg}")
+    print()
