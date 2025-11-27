@@ -21,3 +21,6 @@ make separate files pls :p
 - Plot a small subgraph (≈200–500 nodes) per language.
 - Color by detected community.
 - Optionally visualize bridges or central nodes.
+
+once we get all these stats we can go further by having chat analyze them to see what it finds
+chats pretty good at summarizing data
