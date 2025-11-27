@@ -15,7 +15,7 @@ Do Twitch streamer communities exhibit echo-chamber–like behavior, and how doe
 - Compute metrics for each graph:
    * Nodes, edges [DONE BY ADRIAN]
    * Density [DONE BY ADRIAN]
-   * Average degree
+   * Average degree [DONE BY ADRIAN]
    * Clustering coefficient (`nx.average_clustering`)
    * Average path length (`nx.average_shortest_path_length`)
    * Modularity (`nx.community.louvain_communities`)
