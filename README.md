@@ -40,40 +40,40 @@ most likely smth like this:
 
 ### **2️⃣ Density & Average Degree**
 
-→ Measure how connected users are within their language group.
+→ Measure how connected users are within their language group.  
 → Higher density & degree = tighter communities → greater echo-chamber potential.
 
 ---
 
 ### **3️⃣ Clustering Coefficient**
 
-→ Shows how often “friends of friends” are also friends (triadic closure).
+→ Shows how often “friends of friends” are also friends (triadic closure).  
 → High clustering = closed, tightly-woven groups → stronger internal cohesion.
 
 ---
 
 ### **4️⃣ Average Path Length**
 
-→ Indicates how quickly information can flow within the network.
+→ Indicates how quickly information can flow within the network.  
 → Shorter paths = faster spread of trends/behaviors → faster reinforcement loops.
 
 ---
 
 ### **5️⃣ Modularity & Sub-Community Count**
 
-→ Reveal how strongly the network splits into clusters or cliques.
+→ Reveal how strongly the network splits into clusters or cliques.  
 → High modularity + many sub-communities = fragmentation and isolated “micro-echo-chambers.”
 
 ---
 
 ### **6️⃣ Bridge Nodes (Weak Ties)**
 
-→ Identify users who connect otherwise separate communities.
+→ Identify users who connect otherwise separate communities.  
 → Few bridges = limited cross-community interaction → information stays trapped in clusters.
 
 ---
 
 ### **7️⃣ Subgraph Visualizations (200–500 nodes)**
 
-→ Let us *see* the structure behind the metrics.
+→ Let us *see* the structure behind the metrics.  
 → Visually highlight tightly-knit clusters, sparse regions, and any bridging nodes.
