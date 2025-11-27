@@ -8,6 +8,9 @@ source .venv/bin/activate   # or .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 make separate files pls :p
+## Main idea:
+Do Twitch streamer communities exhibit echo-chamber–like behavior, and how does this differ across language groups?
+
 ## TODO:
 - Compute metrics for each graph:
    * Nodes, edges [DONE BY ADRIAN]
@@ -26,72 +29,28 @@ once we get all these stats we can go further by having chat analyze them to see
 chats pretty good at summarizing data
 
 most likely smth like this:
-Here’s the tight, no-fluff recap of **what each metric means** and **why it matters for your comparative analysis**:
+## 🔬 What your statistics directly answer
+###  1️⃣ Density & Average Degree
 
----
+→ Are users mostly connected to people within their language group?
+→ Higher density = stronger potential echo chambers.
 
-## **1. Nodes & Edges**
+### 2️⃣ Clustering Coefficient
 
-**What it means:** Size of the community and how many friendships exist.
-**Why it matters:** Larger or smaller networks behave differently; gives context for all other metrics.
+→ Do users’ friends all know each other?
+→ High clustering = closed, insular communities (triadic closure).
 
----
+### 3️⃣ Average Path Length
 
-## **2. Density**
+→ How easily does information flow inside the community?
+→ Shorter paths in dense groups → faster reinforcement of beliefs.
 
-**What it means:** Fraction of possible edges that actually exist.
-**Why it matters:** Shows how tightly knit or sparse a language community is.
+### 4️⃣ Modularity & Sub-Communities
 
----
+→ How strongly segmented is each language network into smaller cliques?
+→ High modularity = community fragmentation and echo-chamber risk.
 
-## **3. Average Degree**
+### 5️⃣ Bridge Nodes (Weak Ties)
 
-**What it means:** Average number of connections per user.
-**Why it matters:** Measures how socially active or isolated users are in each language.
-
----
-
-## **4. Clustering Coefficient**
-
-**What it means:** Likelihood that friends of a user are also friends with each other.
-**Why it matters:** High clustering = strong triadic closure → tight subcommunities.
-
----
-
-## **5. Average Path Length**
-
-**What it means:** Average number of steps needed to reach another user.
-**Why it matters:** Tests the “small-world” property; shorter paths mean faster information flow.
-
----
-
-## **6. Modularity**
-
-**What it means:** How strongly the network splits into communities.
-**Why it matters:** High modularity = strong echo-chamber structure and deep community fragmentation.
-
----
-
-## **7. Sub-community Count**
-
-**What it means:** How many distinct groups the algorithm finds.
-**Why it matters:** Shows how fragmented or unified each language network is.
-
----
-
-## **8. Edge Betweenness Centrality (Bridge Nodes)**
-
-**What it means:** Edges that lie on many shortest paths; connectors between groups.
-**Why it matters:** Identifies weak ties that are essential for cross-community communication.
-
----
-
-## **9. Visualization of Subgraphs**
-
-**What it means:** A small, visible slice of the network.
-**Why it matters:** Lets you *show* the structural differences across languages — not just state them.
-
----
-
-Each metric contributes a different dimension of understanding:
-**cohesion, fragmentation, connectivity, and information flow** — the core themes of your report.
+→ Are there users that connect isolated groups?
+→ Few bridges = information stays stuck inside clusters.
