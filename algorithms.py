@@ -1,5 +1,6 @@
 import networkx as nx
 from typing import Dict
+import random
 
 class GraphAnalysis:
 
@@ -31,4 +32,56 @@ class GraphAnalysis:
 
             results[lang] = coeff
 
+        return results        
+
+    @staticmethod
+    def average_path_length(graphs):
+        """
+        Compute approximate average shortest path length for each graph.
+        Uses only the largest connected component (LCC).
+        """
+        results = {}
+
+        for lang, G in graphs.items():
+            try:
+                # Largest connected component
+                components = list(nx.connected_components(G))
+                largest = max(components, key=len)
+                LCC = G.subgraph(largest)
+
+                print(f"Computing approximate APL for {lang}... "
+                    f"LCC size = {LCC.number_of_nodes()} nodes")
+
+                # Use fast approximation
+                apl = approximate_average_path_length(LCC, sample_size=100)
+
+            except Exception as e:
+                print(f"Error computing path length for {lang}: {e}")
+                apl = None
+
+            results[lang] = apl
+
         return results
+
+# Helper func    
+def approximate_average_path_length(G, sample_size=500):
+        """
+        Approximate the average shortest path length by sampling.
+        Much faster than exact APSP on large graphs.
+        """
+        nodes = list(G.nodes())
+
+        # If graph is small, compute exact value
+        if len(nodes) <= sample_size:
+            return nx.average_shortest_path_length(G)
+
+        # Randomly sample nodes
+        sample = random.sample(nodes, sample_size)
+        lengths = []
+
+        for s in sample:
+            sp = nx.single_source_shortest_path_length(G, s)
+            lengths.extend(sp.values())  # add all distances from node s
+
+        # Compute average
+        return sum(lengths) / len(lengths)  

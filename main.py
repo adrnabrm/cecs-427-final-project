@@ -59,3 +59,10 @@ if __name__ == "__main__":
     for lang, coeff in clustering_coeffs.items():
         print(f"{lang} Average Clustering Coefficient: {coeff}")
     print()
+
+    # Print average shortest path length
+    # Must be computed on largest connected component
+    avg_paths = GraphAnalysis.average_path_length(graphs)
+    for lang, path in avg_paths.items():
+        print(f"{lang} Average Path Length (LCC): {path}")
+    print()
