@@ -52,3 +52,10 @@ if __name__ == "__main__":
     for lang, avg_deg in avg_degrees.items():
         print(f"{lang} Average Degree Count: {avg_deg}")
     print()
+
+    # Print clustering coefficient
+    # Measures how tightly knit the neighborhoods are in each community
+    clustering_coeffs = GraphAnalysis.clustering_coefficient(graphs)
+    for lang, coeff in clustering_coeffs.items():
+        print(f"{lang} Average Clustering Coefficient: {coeff}")
+    print()

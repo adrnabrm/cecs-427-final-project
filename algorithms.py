@@ -17,3 +17,18 @@ class GraphAnalysis:
             degrees = dict(G.degree())
             avg_degrees[lang] = sum(degrees.values()) / G.number_of_nodes()
         return avg_degrees
+    
+    @staticmethod
+    def clustering_coefficient(graphs: Dict[str, nx.Graph]) -> Dict[str, float]:
+        """Compute average clustering coefficient for each graph"""
+        results = {}
+        for lang, G in graphs.items():
+            try:
+                coeff = nx.average_clustering(G)
+            except Exception as e:
+                print(f"Error computing clustering for {lang}: {e}")
+                coeff = None
+
+            results[lang] = coeff
+
+        return results
