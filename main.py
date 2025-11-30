@@ -66,3 +66,29 @@ if __name__ == "__main__":
     for lang, path in avg_paths.items():
         print(f"{lang} Average Path Length (LCC): {path}")
     print()
+
+    # Print modularity and sub-community count
+    # High modularity indicates strong community structure (fragmentation)
+    # More sub-communities suggests micro-echo-chambers within language groups
+    print(f"--Modularity and Community Detection--")
+    modularity_results = GraphAnalysis.modularity_and_communities(graphs)
+    for lang, (modularity, num_communities, _) in modularity_results.items():
+        if modularity is not None:
+            print(f"{lang} Modularity: {modularity:.4f} | Sub-communities: {num_communities}")
+        else:
+            print(f"{lang} Modularity: Error computing")
+    print()
+
+    # Identify bridge nodes (weak ties connecting communities)
+    # High betweenness centrality edges are critical connections between clusters
+    # Few/weak bridges = stronger echo chambers with limited cross-community flow
+    print(f"--Bridge Nodes Analysis (Top 5 per language)--")
+    bridge_results = GraphAnalysis.identify_bridge_nodes(graphs, top_n=5)
+    for lang, bridges in bridge_results.items():
+        print(f"\n{lang} Top Bridge Edges:")
+        if bridges:
+            for i, (node1, node2, score) in enumerate(bridges, 1):
+                print(f"  {i}. Edge ({node1}, {node2}): Betweenness = {score:.6f}")
+        else:
+            print("  Error or no bridges found")
+    print()
