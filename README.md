@@ -18,9 +18,9 @@ Do Twitch streamer communities exhibit echo-chamber–like behavior, and how doe
    * Average degree [DONE BY ADRIAN]
    * Clustering coefficient [DONE BY ANGELO]
    * Average path length [DONE BY ANGELO w/ approximations] (Kinda takes a couple min)
-   * Modularity (`nx.community.louvain_communities`)
-- Count detected sub-communities.
-- Identify top bridge nodes via **edge betweenness centrality**.
+   * Modularity (`nx.community.louvain_communities`) [DONE BY RUSSELL]
+- Count detected sub-communities. [DONE BY RUSSELL]
+- Identify top bridge nodes via **edge betweenness centrality**. [DONE BY RUSSELL]
 - Compute neighborhood overlap (strong vs. weak ties)
 - Plot a small subgraph (≈200–500 nodes) per language.
 - Color by detected community.

@@ -1,6 +1,7 @@
 import networkx as nx
-from typing import Dict
+from typing import Dict, Tuple, List
 import random
+import networkx.algorithms.community as nx_comm
 
 class GraphAnalysis:
 
@@ -60,6 +61,81 @@ class GraphAnalysis:
                 apl = None
 
             results[lang] = apl
+
+        return results
+
+    @staticmethod
+    def modularity_and_communities(graphs: Dict[str, nx.Graph]) -> Dict[str, Tuple[float, int, List]]:
+        """
+        Compute modularity and detect sub-communities using Louvain algorithm.
+
+        Returns:
+            Dict mapping language to (modularity_score, num_communities, communities_list)
+        """
+        results = {}
+
+        for lang, G in graphs.items():
+            try:
+                print(f"Detecting communities for {lang}...")
+
+                # Use Louvain algorithm for community detection
+                communities = nx_comm.louvain_communities(G, seed=42)
+
+                # Compute modularity score
+                modularity = nx_comm.modularity(G, communities)
+
+                num_communities = len(communities)
+
+                results[lang] = (modularity, num_communities, communities)
+
+                print(f"  -> Found {num_communities} communities with modularity {modularity:.4f}")
+
+            except Exception as e:
+                print(f"Error computing modularity for {lang}: {e}")
+                results[lang] = (None, None, None)
+
+        return results
+
+    @staticmethod
+    def identify_bridge_nodes(graphs: Dict[str, nx.Graph], top_n: int = 10) -> Dict[str, List[Tuple]]:
+        """
+        Identify top bridge nodes (weak ties) using edge betweenness centrality.
+
+        Bridge nodes are those that connect different communities. High edge betweenness
+        indicates an edge that lies on many shortest paths between nodes, suggesting
+        it bridges different clusters.
+
+        Args:
+            graphs: Dictionary of language graphs
+            top_n: Number of top bridge edges to return per language
+
+        Returns:
+            Dict mapping language to list of (node1, node2, betweenness_score) tuples
+        """
+        results = {}
+
+        for lang, G in graphs.items():
+            try:
+                print(f"Computing edge betweenness centrality for {lang}...")
+                print(f"  (This may take a while for large graphs...)")
+
+                # Compute edge betweenness centrality
+                # This measures how many shortest paths pass through each edge
+                edge_betweenness = nx.edge_betweenness_centrality(G, k=500, seed=42)
+
+                # Sort edges by betweenness (highest first)
+                sorted_edges = sorted(edge_betweenness.items(), key=lambda x: x[1], reverse=True)
+
+                # Get top N bridge edges
+                top_bridges = [(edge[0], edge[1], score) for edge, score in sorted_edges[:top_n]]
+
+                results[lang] = top_bridges
+
+                print(f"  -> Identified top {top_n} bridge edges")
+
+            except Exception as e:
+                print(f"Error computing bridge nodes for {lang}: {e}")
+                results[lang] = []
 
         return results
 
