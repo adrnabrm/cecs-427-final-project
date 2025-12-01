@@ -139,6 +139,100 @@ class GraphAnalysis:
 
         return results
 
+    @staticmethod
+    def neighborhood_overlap(graphs: Dict[str, nx.Graph], top_n=10):
+        """
+        Compute neighborhood overlap for each edge
+        Returns:
+            Dict mapping language to (top strong ties, top weak ties)
+        """
+        results = {}
+
+        for lang, G in graphs.items():
+            overlaps = {}
+
+            for u, v in G.edges():
+                Nu = set(G.neighbors(u)) - {v}
+                Nv = set(G.neighbors(v)) - {u}
+                inter = Nu & Nv
+                union = Nu | Nv
+
+                if len(union) == 0:
+                    overlap_val = 0
+                else:
+                    overlap_val = len(inter) / len(union)
+
+                overlaps[(u, v)] = overlap_val
+
+            # Sort strong → weak
+            sorted_edges = sorted(overlaps.items(), key=lambda x: x[1], reverse=True)
+
+            top_strong = sorted_edges[:top_n]
+            top_weak = sorted_edges[-top_n:]
+
+            results[lang] = {
+                "strong_ties": top_strong,
+                "weak_ties": top_weak
+            }
+
+        return results
+
+    @staticmethod
+    def sample_subgraph(G: nx.Graph, n=400, seed=42):
+        """
+        Sample up to n nodes biased toward high-degree nodes to preserve structure.
+        """
+        random.seed(seed)
+        if G.number_of_nodes() <= n:
+            return G.copy()
+
+        degrees = dict(G.degree())
+        nodes = list(G.nodes())
+        weights = [degrees[u] + 1 for u in nodes]
+
+        sampled = set()
+        while len(sampled) < n:
+            sampled.add(random.choices(nodes, weights=weights, k=1)[0])
+
+        return G.subgraph(sampled).copy()
+
+    @staticmethod
+    def visualize_subgraph(G: nx.Graph, out_path: str, sample_size=400):
+        """
+        Visualize a sampled subgraph, color nodes by community, highlight top bridge edges.
+        """
+        import matplotlib.pyplot as plt
+
+        H = GraphAnalysis.sample_subgraph(G, n=sample_size)
+
+        # Detect communities
+        communities = nx_comm.louvain_communities(H, seed=42)
+        color_map = {}
+        for i, comm in enumerate(communities):
+            for node in comm:
+                color_map[node] = i
+
+        colors = [color_map[n] for n in H.nodes()]
+
+        pos = nx.spring_layout(H, seed=42)
+
+        plt.figure(figsize=(10, 10))
+        nx.draw_networkx_nodes(H, pos, node_color=colors,
+                               cmap=plt.cm.Set3, node_size=40)
+        nx.draw_networkx_edges(H, pos, alpha=0.3, width=0.4)
+
+        # Highlight top 5 bridge edges
+        bridges = GraphAnalysis.identify_bridge_nodes({"tmp": H}, top_n=5)["tmp"]
+        if bridges:
+            highlight_edges = [(u, v) for (u, v, score) in bridges]
+            nx.draw_networkx_edges(H, pos, edgelist=highlight_edges,
+                                   width=2, edge_color="red")
+
+        plt.axis("off")
+        plt.tight_layout()
+        plt.savefig(out_path, dpi=200)
+        plt.close()
+
 # Helper func    
 def approximate_average_path_length(G, sample_size=500):
         """
