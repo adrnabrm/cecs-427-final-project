@@ -21,9 +21,9 @@ Do Twitch streamer communities exhibit echo-chamber–like behavior, and how doe
    * Modularity (`nx.community.louvain_communities`) [DONE BY RUSSELL]
 - Count detected sub-communities. [DONE BY RUSSELL]
 - Identify top bridge nodes via **edge betweenness centrality**. [DONE BY RUSSELL]
-- Compute neighborhood overlap (strong vs. weak ties)
-- Plot a small subgraph (≈200–500 nodes) per language.
-- Color by detected community.
+- Compute neighborhood overlap (strong vs. weak ties) [DONE BY MATT]
+- Plot a small subgraph (≈200–500 nodes) per language. [DONE BY MATT]
+- Color by detected community. [DONE BY MATT]
 - Optionally visualize bridges or central nodes.
 
 once we get all these stats we can go further by having chat analyze them to see what it finds
