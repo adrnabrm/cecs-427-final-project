@@ -121,7 +121,9 @@ class GraphAnalysis:
 
                 # Compute edge betweenness centrality
                 # This measures how many shortest paths pass through each edge
-                edge_betweenness = nx.edge_betweenness_centrality(G, k=500, seed=42)
+                k_val = min(200, G.number_of_nodes())   # 200 is safe for speed
+                edge_betweenness = nx.edge_betweenness_centrality(G, k=k_val, seed=42)
+
 
                 # Sort edges by betweenness (highest first)
                 sorted_edges = sorted(edge_betweenness.items(), key=lambda x: x[1], reverse=True)
@@ -198,40 +200,49 @@ class GraphAnalysis:
 
     @staticmethod
     def visualize_subgraph(G: nx.Graph, out_path: str, sample_size=400):
-        """
-        Visualize a sampled subgraph, color nodes by community, highlight top bridge edges.
-        """
         import matplotlib.pyplot as plt
 
+        # Sample graph
         H = GraphAnalysis.sample_subgraph(G, n=sample_size)
 
-        # Detect communities
+        # Keep only LCC
+        largest = max(nx.connected_components(H), key=len)
+        H = H.subgraph(largest).copy()
+
+        # Community detection
         communities = nx_comm.louvain_communities(H, seed=42)
         color_map = {}
         for i, comm in enumerate(communities):
             for node in comm:
                 color_map[node] = i
-
         colors = [color_map[n] for n in H.nodes()]
 
-        pos = nx.spring_layout(H, seed=42)
+        # Better layout
+        pos = nx.spring_layout(H, k=1.2, iterations=200, seed=42)
 
-        plt.figure(figsize=(10, 10))
-        nx.draw_networkx_nodes(H, pos, node_color=colors,
-                               cmap=plt.cm.Set3, node_size=40)
-        nx.draw_networkx_edges(H, pos, alpha=0.3, width=0.4)
+        plt.figure(figsize=(14, 14))
 
-        # Highlight top 5 bridge edges
+        # Nodes
+        nx.draw_networkx_nodes(
+            H, pos, node_color=colors, cmap=plt.cm.tab20,
+            node_size=15, alpha=0.9
+        )
+
+        # Edges
+        nx.draw_networkx_edges(H, pos, alpha=0.15, width=0.2)
+
+        # Highlight bridges (optional)
         bridges = GraphAnalysis.identify_bridge_nodes({"tmp": H}, top_n=5)["tmp"]
         if bridges:
             highlight_edges = [(u, v) for (u, v, score) in bridges]
             nx.draw_networkx_edges(H, pos, edgelist=highlight_edges,
-                                   width=2, edge_color="red")
+                                width=1.5, edge_color="red")
 
         plt.axis("off")
         plt.tight_layout()
-        plt.savefig(out_path, dpi=200)
+        plt.savefig(out_path, dpi=300)
         plt.close()
+
 
 # Helper func    
 def approximate_average_path_length(G, sample_size=500):
