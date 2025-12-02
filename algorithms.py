@@ -142,16 +142,21 @@ class GraphAnalysis:
         return results
 
     @staticmethod
-    def neighborhood_overlap(graphs: Dict[str, nx.Graph], top_n=10):
+    def neighborhood_overlap(graphs: Dict[str, nx.Graph]) -> Dict[str, Dict[str, float]]:
         """
-        Compute neighborhood overlap for each edge
-        Returns:
-            Dict mapping language to (top strong ties, top weak ties)
+        Compute summary statistics of neighborhood overlap for each graph.
+        
+        Returns for each language:
+            - avg_overlap: average neighborhood overlap across all edges
+            - frac_zero_overlap: fraction of edges with zero overlap (pure weak ties)
+            - frac_high_overlap: fraction of edges with overlap > 0.5 (strong ties)
         """
         results = {}
 
         for lang, G in graphs.items():
-            overlaps = {}
+            overlaps = []
+            zero_count = 0
+            high_count = 0
 
             for u, v in G.edges():
                 Nu = set(G.neighbors(u)) - {v}
@@ -160,24 +165,28 @@ class GraphAnalysis:
                 union = Nu | Nv
 
                 if len(union) == 0:
-                    overlap_val = 0
+                    ov = 0.0
                 else:
-                    overlap_val = len(inter) / len(union)
+                    ov = len(inter) / len(union)
 
-                overlaps[(u, v)] = overlap_val
+                overlaps.append(ov)
+                if ov == 0.0:
+                    zero_count += 1
+                if ov > 0.5:
+                    high_count += 1
 
-            # Sort strong → weak
-            sorted_edges = sorted(overlaps.items(), key=lambda x: x[1], reverse=True)
-
-            top_strong = sorted_edges[:top_n]
-            top_weak = sorted_edges[-top_n:]
+            avg_overlap = sum(overlaps) / len(overlaps)
+            frac_zero = zero_count / len(overlaps)
+            frac_high = high_count / len(overlaps)
 
             results[lang] = {
-                "strong_ties": top_strong,
-                "weak_ties": top_weak
+                "avg_overlap": avg_overlap,
+                "frac_zero_overlap": frac_zero,
+                "frac_high_overlap": frac_high
             }
 
         return results
+
 
     @staticmethod
     def sample_subgraph(G: nx.Graph, n=400, seed=42):

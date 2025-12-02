@@ -93,20 +93,17 @@ if __name__ == "__main__":
             print("  Error or no bridges found")
     print()
 
-    # Print neighborhood overlap (strong vs weak ties)
-    print("--Neighborhood Overlap--")
-    overlap_results = GraphAnalysis.neighborhood_overlap(graphs, top_n=5)
+    # Print neighborhood overlap summary
+    print("--Neighborhood Overlap Summary--")
+    overlap_summary = GraphAnalysis.neighborhood_overlap(graphs)
 
-    for lang, data in overlap_results.items():
-        print(f"\n{lang} Strongest Ties:")
-        for (u, v), score in data["strong_ties"]:
-            print(f"  Edge ({u}, {v}) overlap = {score:.4f}")
-
-        print(f"\n{lang} Weakest Ties (Likely Bridges):")
-        for (u, v), score in data["weak_ties"]:
-            print(f"  Edge ({u}, {v}) overlap = {score:.4f}")
-
+    for lang, stats in overlap_summary.items():
+        print(f"\n{lang}:")
+        print(f"  Average Overlap:        {stats['avg_overlap']:.4f}")
+        print(f"  Fraction Zero-Overlap:  {stats['frac_zero_overlap']:.4f}")
+        print(f"  Fraction High-Overlap:  {stats['frac_high_overlap']:.4f}")
     print()
+
 
     # Print subgraph per language
     print("--Generating Subgraph Visualizations--")
