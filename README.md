@@ -1,73 +1,54 @@
-# cecs-427-final-proiject
+# Echo-Chamber Signals in Twitch Language Communities
 
-## Setup Virtual Environment (Shared)
+## Authors
+Adrian Abraham · Reichen Brown · Matthew Carranza · Angelo Cervana · Russell Harral
 
+## Abstract
+Echo chambers consistently present challenges within social networks. They shape how users interact with information exchanged with others online and how that information traverses among those users. Therefore, they can limit a user’s exposure to diverse content by reinforcing community homogeneity. This report analyzes how the social platform, Twitch, which utilizes language-based community systems, exhibits properties also associated with echo chambers. We construct community networks to compute the density, average degree, clustering coefficient, average path length, modularity, and edge betweenness. The results of the metrics display patterns suggesting that Twitch’s language communities contain fragmentation. By primarily relying on a few weak ties to circulate information, Twitch is prone to homogeneous communities, which reflects the dynamics present in echo chambers.
+
+## Project Overview
+This repository measures whether Twitch’s language-specific communities display structural traits commonly linked to echo chambers. We build undirected graphs from Twitch’s `musae` dataset, annotate them with streamer attributes, and evaluate network-level metrics along with visual subgraphs to highlight fragmentation and bridging edges.
+
+## Repository Structure
+- `main.py` – end-to-end driver that loads the language graphs, runs all metrics, and writes subgraph visualizations.
+- `algorithms.py` – reusable `GraphAnalysis` utilities for density, degree, clustering, approximate path length, Louvain modularity, bridge detection, neighborhood overlap, and visualization helpers.
+- `twitch-dataset/` – raw Twitch `musae` data grouped by language (`DE`, `ENGB`, `ES`, `FR`, `PTBR`, `RU`). Each folder contains `*_edges.csv`, `*_target.csv` (node attributes), and some include `*_features.json`.
+- `subgraphs/` – generated PNGs showing representative subgraph layouts per language with detected communities and highlighted bridges.
+- `requirements.txt` – Python dependencies.
+
+## Metrics and Outputs
+For every language-specific graph we compute:
+- **Network size** – node and edge counts for overall community scale.
+- **Density & average degree** – connectivity level indicating how tightly users cluster.
+- **Average clustering coefficient** – prevalence of triadic closure within the language.
+- **Approximate average path length** – assessed on the largest connected component using sampling-based shortest paths.
+- **Louvain modularity & sub-community count** – strength and number of partitions revealing fragmentation.
+- **Top bridge edges** – derived from edge betweenness centrality to surface weak ties across clusters.
+- **Neighborhood overlap statistics** – summarizes strong vs. weak ties via proportion of shared neighbors.
+- **Subgraph visualizations** – 200–400 node samples stored under `subgraphs/*.png`, colored by detected communities with bridge edges highlighted.
+
+Console output lists each metric per language; image files provide qualitative insight into the detected structures.
+
+## Environment & Tooling
+- Python 3.10+
+- Key libraries: `pandas`, `networkx`, `matplotlib`, `typing`.
+- Optional: `venv` or any virtual environment manager.
+
+### Setup
 ```bash
 python3 -m venv .venv
-source .venv/bin/activate   # or .venv\Scripts\activate
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
-make separate files pls :p
-## Main idea:
-Do Twitch streamer communities exhibit echo-chamber–like behavior, and how does this differ across language groups?
 
-## TODO:
-- Compute metrics for each graph:
-   * Nodes, edges [DONE BY ADRIAN]
-   * Density [DONE BY ADRIAN]
-   * Average degree [DONE BY ADRIAN]
-   * Clustering coefficient [DONE BY ANGELO]
-   * Average path length [DONE BY ANGELO w/ approximations] (Kinda takes a couple min)
-   * Modularity (`nx.community.louvain_communities`) [DONE BY RUSSELL]
-- Count detected sub-communities. [DONE BY RUSSELL]
-- Identify top bridge nodes via **edge betweenness centrality**. [DONE BY RUSSELL]
-- Compute neighborhood overlap (strong vs. weak ties) [DONE BY MATT]
-- Plot a small subgraph (≈200–500 nodes) per language. [DONE BY MATT]
-- Color by detected community. [DONE BY MATT]
-- Optionally visualize bridges or central nodes.
+## Running the Analysis
+```bash
+python main.py
+```
 
-once we get all these stats we can go further by having chat analyze them to see what it finds
-chats pretty good at summarizing data
+The script will:
+1. Load every language graph from `twitch-dataset/`.
+2. Print metric tables to stdout.
+3. Produce language-specific PNGs inside `subgraphs/`.
 
-most likely smth like this:
-## What Each Metric Tells Us
-
-### **1️⃣ Nodes & Edges**
-
-→ Establish the size and connection volume of each language community.  
-→ Larger networks tend to be more fragmented; smaller ones tend to be denser.
-
-### **2️⃣ Density & Average Degree**
-
-→ Measure how connected users are within their language group.  
-→ Higher density & degree = tighter communities → greater echo-chamber potential.
-
-### **3️⃣ Clustering Coefficient**
-
-→ Shows how often “friends of friends” are also friends (triadic closure).  
-→ High clustering = closed, tightly-woven groups → stronger internal cohesion.
-
-### **4️⃣ Average Path Length**
-
-→ Indicates how quickly information can flow within the network.  
-→ Shorter paths = faster spread of trends/behaviors → faster reinforcement loops.
-
-### **5️⃣ Modularity & Sub-Community Count**
-
-→ Reveal how strongly the network splits into clusters or cliques.  
-→ High modularity + many sub-communities = fragmentation and isolated “micro-echo-chambers.”
-
-### **6️⃣ Bridge Nodes (Weak Ties)**
-
-→ Identify users who connect otherwise separate communities.  
-→ Few bridges = limited cross-community interaction → information stays trapped in clusters.
-
-### **7️⃣ Neighborhood Overlap (Strong vs. Weak Ties)**
-
-→ Measures how many mutual friends two connected users share.  
-→ High overlap = strong ties inside clusters; low overlap = weak ties acting as bridges.
-
-### **8️⃣ Subgraph Visualizations (200–500 nodes)**
-
-→ Let us see the structure behind the metrics.  
-→ Visually highlight tightly-knit clusters, sparse regions, and any bridging nodes.
+Depending on machine specs, Louvain community detection and betweenness centrality can take several minutes on the largest graphs.
